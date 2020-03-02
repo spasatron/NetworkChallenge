@@ -41,7 +41,4 @@ bin-int/*
 
 #All vs code project setups
 
-*.vcxproj
-*.filters
-
 !vendor/bin/premake5/premake5.exe

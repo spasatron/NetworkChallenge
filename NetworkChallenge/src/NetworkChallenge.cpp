@@ -37,7 +37,7 @@ int main(int argc, char* argv[])
     
 
     // Resolve the server address and port
-    iResult = getaddrinfo("1", DEFAULT_PORT, &hints, &result);
+    iResult = getaddrinfo("10.202.150.121", DEFAULT_PORT, &hints, &result);
     if (iResult != 0) {
         printf("getaddrinfo failed: %d\n", iResult);
         WSACleanup();
@@ -63,6 +63,26 @@ int main(int argc, char* argv[])
         freeaddrinfo(result);
         WSACleanup();
     return 1;
-}
+    }
+
+
+    iResult = connect(ConnectSocket, ptr->ai_addr, (int)ptr->ai_addrlen);
+    if (iResult == SOCKET_ERROR) {
+        closesocket(ConnectSocket);
+        ConnectSocket = INVALID_SOCKET;
+    }
+
+    // Should really try the next address returned by getaddrinfo
+    // if the connect call failed
+    // But for this simple example we just free the resources
+    // returned by getaddrinfo and print an error message
+
+    freeaddrinfo(result);
+
+    if (ConnectSocket == INVALID_SOCKET) {
+        printf("Unable to connect to server!\n");
+        WSACleanup();
+        return 1;
+    }
 }
 
