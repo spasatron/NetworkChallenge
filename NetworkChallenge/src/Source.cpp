@@ -37,7 +37,7 @@ int main(int argc, char* argv[])
     
 
     // Resolve the server address and port
-    iResult = getaddrinfo("10.202.130.237", DEFAULT_PORT, &hints, &result);
+    iResult = getaddrinfo(NULL/*"10.202.130.237"*/, DEFAULT_PORT, &hints, &result);
     if (iResult != 0) {
         printf("getaddrinfo failed: %d\n", iResult);
         WSACleanup();
@@ -72,11 +72,24 @@ int main(int argc, char* argv[])
 	freeaddrinfo(result);
 
 
-	/*if (listen(ListenSocket, SOMAXCONN) == SOCKET_ERROR) {
+	if (listen(ListenSocket, SOMAXCONN) == SOCKET_ERROR) {
 		printf("Listen failed with error: %ld\n", WSAGetLastError());
 		closesocket(ListenSocket);
 		WSACleanup();
 		return 1;
-	}*/
+	}
+
+	SOCKET ClientSocket;
+
+	ClientSocket = INVALID_SOCKET;
+
+	// Accept a client socket
+	ClientSocket = accept(ListenSocket, NULL, NULL);
+	if (ClientSocket == INVALID_SOCKET) {
+		printf("accept failed: %d\n", WSAGetLastError());
+		closesocket(ListenSocket);
+		WSACleanup();
+		return 1;
+	}
 }
 
